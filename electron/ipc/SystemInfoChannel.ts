@@ -1,0 +1,49 @@
+import {IpcChannelInterface} from "types/IpcChannelInterface";
+import {IpcMainEvent} from 'electron';
+import {IpcRequest} from "types/IpcRequest";
+import {execSync} from "child_process";
+import {getChannelResponse} from 'shared/IpcService'
+import os from 'os';
+import { ISystemInfo } from 'types/ISystemInfo'
+
+
+export class SystemInfoChannel implements IpcChannelInterface {
+  getName(): string {
+    return 'system-info';
+  }
+
+  handle(event: IpcMainEvent, request: IpcRequest): void {
+    if (!request.responseChannel) {
+      request.responseChannel = getChannelResponse(this.getName());
+    }
+
+    const systemInfo: ISystemInfo = {
+      // 系统中的默认存放临时文件的目录
+      tmpdir: os.tmpdir(),
+
+      // 获取计算机名称
+      hostname: os.hostname(),
+
+      // 获取操作系统类型 
+      type: os.type(),
+
+      // 获取操作系统平台
+      platform: os.platform(),
+
+      // 获取CPU架构 
+      arch: os.arch(),
+      
+      // 获取操作系统版本号
+      release: os.release(),
+
+      // 获取系统当前运行的时间
+      uptime: os.uptime(),
+
+      // 系统总内存量
+      totalmem: os.totalmem()
+
+    }
+    
+    event.sender.send(request.responseChannel, systemInfo);
+  }
+}

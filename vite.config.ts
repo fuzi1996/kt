@@ -4,6 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 import pkg from './package.json'
+import { join } from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -13,13 +14,23 @@ export default defineConfig(({ command }) => {
   const isBuild = command === 'build'
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG
 
+  const resolve = {
+    alias: {
+      'frontend': join(__dirname,'./src'),
+      'shared': join(__dirname,'./shared'),
+      'types': join(__dirname,'./types'),
+      'backend': join(__dirname,'./electron')
+    }
+  }
+
   return {
     plugins: [
+      // alias(),
       vue(),
       electron([
         {
           // Main-Process entry file of the Electron App.
-          entry: 'electron/main/index.ts',
+          entry: 'electron/index.ts',
           onstart(options) {
             if (process.env.VSCODE_DEBUG) {
               console.log(/* For `.vscode/.debug.script.mjs` */'[startup] Electron App')
@@ -36,6 +47,7 @@ export default defineConfig(({ command }) => {
                 external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
+            resolve
           },
         },
         {
@@ -54,6 +66,7 @@ export default defineConfig(({ command }) => {
                 external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
+            resolve
           },
         }
       ]),
@@ -70,5 +83,6 @@ export default defineConfig(({ command }) => {
       }
     })(),
     clearScreen: false,
+    resolve
   }
 })
