@@ -4,7 +4,8 @@ import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 import pkg from './package.json'
-import { join } from "path";
+import { join,resolve } from "path";
+import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => {
@@ -14,7 +15,7 @@ export default defineConfig(({ command }) => {
   const isBuild = command === 'build'
   const sourcemap = isServe || !!process.env.VSCODE_DEBUG
 
-  const resolve = {
+  const resolveConfig = {
     alias: {
       'frontend': join(__dirname,'./src'),
       'shared': join(__dirname,'./shared'),
@@ -25,7 +26,12 @@ export default defineConfig(({ command }) => {
 
   return {
     plugins: [
-      // alias(),
+      createSvgIconsPlugin({
+        // Specify the icon folder to be cached
+        iconDirs: [resolve(__dirname, 'src/assets/svg')],
+        // Specify symbolId format
+        symbolId: 'icon-[dir]-[name]'
+      }),
       vue(),
       electron([
         {
@@ -47,7 +53,7 @@ export default defineConfig(({ command }) => {
                 external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
-            resolve
+            resolve: resolveConfig
           },
         },
         {
@@ -66,7 +72,7 @@ export default defineConfig(({ command }) => {
                 external: Object.keys('dependencies' in pkg ? pkg.dependencies : {}),
               },
             },
-            resolve
+            resolve: resolveConfig
           },
         }
       ]),
@@ -83,6 +89,6 @@ export default defineConfig(({ command }) => {
       }
     })(),
     clearScreen: false,
-    resolve
+    resolve: resolveConfig
   }
 })

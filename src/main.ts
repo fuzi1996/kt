@@ -10,13 +10,13 @@ import DisplayPodData from 'frontend/components/DisplayPodData.vue'
 import DisplaySvcData from 'frontend/components/DisplaySvcData.vue'
 import SettingsPage from 'frontend/components/SettingsPage.vue'
 import LogGroups from 'frontend/components/LogGroups.vue'
-
+import SvgIcon from 'frontend/components/svg/SvgIcon.vue'
 import 'frontend/samples/node-api'
 
 
 import 'element-plus/dist/index.css'
 import "./style.css"
-
+import 'virtual:svg-icons-register'
 
 
 
@@ -28,7 +28,7 @@ const routes = [
   { path: "/setting", component: SettingsPage },
   { path: "/log", component: LogGroups },
   { path: "/console", component: ConsoleGroups },
-  { path: "/", redirect: "/log" },
+  { path: "/", redirect: "/pod" },
 ]
 
 const router = createRouter({
@@ -43,6 +43,7 @@ app.use(ElementPlus)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
+app.component('SvgIcon', SvgIcon)
 app.use(router)
 
 

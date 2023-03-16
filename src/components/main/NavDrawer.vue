@@ -8,6 +8,10 @@
     text-color="#bfcbd9"
     @select="handleMenuSelect"
   >
+    <el-menu-item index="/pod" class="menu">
+      <el-icon><SvgIcon name="pod"></SvgIcon></el-icon>
+      <template #title>Pod</template>
+    </el-menu-item>
     <el-menu-item index="/setting" class="menu">
       <el-icon><setting /></el-icon>
       <template #title>Config</template>
