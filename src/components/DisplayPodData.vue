@@ -35,7 +35,8 @@
 <script setup lang="ts">
 import { ipcRenderer } from 'electron'
 import { IpcService } from 'frontend/utils/IpcService'
-import { K8S_EVENT,CLIPBOARD_EVENT } from 'shared/Events'
+import { K8S_EVENT,CLIPBOARD_EVENT,WINDOW_EVENT } from 'shared/Events'
+import { LOG_MENU_ROUTE } from 'shared/Menu'
 import { ElMessage } from 'element-plus'
 import { V1PodList,V1Pod } from "@kubernetes/client-node";
 import { onMounted, ref } from 'vue';
@@ -43,8 +44,10 @@ import { onMounted, ref } from 'vue';
 interface Pod {
   value: V1Pod
   name?: string,
+  containerName: string,
   creationTimestamp: string,
-  copying: boolean
+  copying: boolean,
+  namespace: string
 }
 
 const ipcService = new IpcService()
@@ -59,7 +62,6 @@ onMounted(()=>{
 function filtePod(){
   if(fileterValue.value){
     const filtePattern = new RegExp(fileterValue.value,'g')
-    console.log('filtePattern',filtePattern)
     podList.value = allPods.filter(pod => {
       if(pod.name){
         return filtePattern.test(pod.name)
@@ -73,7 +75,17 @@ function filtePod(){
 }
 
 function openPodLog(row: Pod){
-  console.log('openPodLog',row)
+  const route = {
+    route: LOG_MENU_ROUTE,
+    param: {
+      podName: row.name,
+      containerName: row.containerName,
+      namespace: row.namespace
+    }
+  }
+  ipcRenderer.invoke(WINDOW_EVENT.OPEN, route).then(()=>{
+    ElMessage.success('打开成功')
+  })
 }
 
 function handleCopyIconClick(row: Pod){
@@ -105,12 +117,14 @@ const listPod = () => {
     const response:V1PodList = res as V1PodList
     console.log('listPod',response)
     response.items.forEach(item => {
-      if(item.metadata){
+      if(item.metadata && item.spec){
         const pod: Pod = {
         value: item,
         name: item.metadata.name,
+        containerName: item.spec.containers[0].name,
         creationTimestamp: formCreationTimestamp(item.metadata?.creationTimestamp),
-        copying: false
+        copying: false,
+        namespace: item.metadata.namespace || ''
       }
       allPods.push(pod)
       }

@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue'
 import electron from 'vite-plugin-electron'
 import renderer from 'vite-plugin-electron-renderer'
 import pkg from './package.json'
-import { join,resolve } from "path";
+import { join } from "path";
 import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 
 // https://vitejs.dev/config/
@@ -28,7 +28,7 @@ export default defineConfig(({ command }) => {
     plugins: [
       createSvgIconsPlugin({
         // Specify the icon folder to be cached
-        iconDirs: [resolve(__dirname, 'src/assets/svg')],
+        iconDirs: [join(__dirname, 'src/assets/svg')],
         // Specify symbolId format
         symbolId: 'icon-[dir]-[name]'
       }),
@@ -89,6 +89,14 @@ export default defineConfig(({ command }) => {
       }
     })(),
     clearScreen: false,
-    resolve: resolveConfig
+    resolve: resolveConfig,
+    build:{
+      rollupOptions:{
+        input:{
+          index: join(__dirname,'./index.html'),
+          entry: join(__dirname, './entry.html'),
+        }
+      }
+    }
   }
 })

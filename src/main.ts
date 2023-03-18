@@ -9,7 +9,7 @@ import DisplayNamespace from 'frontend/components/DisplayNamespace.vue'
 import DisplayPodData from 'frontend/components/DisplayPodData.vue'
 import DisplaySvcData from 'frontend/components/DisplaySvcData.vue'
 import SettingsPage from 'frontend/components/SettingsPage.vue'
-import LogGroups from 'frontend/components/LogGroups.vue'
+import LogGroups from 'frontend/components/Log.vue'
 import SvgIcon from 'frontend/components/svg/SvgIcon.vue'
 import 'frontend/samples/node-api'
 

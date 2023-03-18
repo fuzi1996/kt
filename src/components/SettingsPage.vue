@@ -15,7 +15,7 @@
     <el-dialog
       v-model="isDialogShow"
       title="系统信息"
-      width="60%"
+      width="400"
       class="system-info"
     >
       <el-row>
