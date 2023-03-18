@@ -1,9 +1,9 @@
 {
-  "name": "electron-vue-vite",
-  "version": "2.0.0",
+  "name": "kt",
+  "version": "0.0.0",
   "main": "dist-electron/main/index.js",
   "description": "Really simple Electron + Vue + Vite boilerplate.",
-  "author": "草鞋没号 <308487730@qq.com>",
+  "author": "fuzi1996",
   "license": "MIT",
   "private": true,
   "keywords": [
@@ -23,15 +23,28 @@
     "build": "vue-tsc --noEmit && vite build && electron-builder",
     "preview": "vite preview"
   },
+  "dependencies": {
+    "@kubernetes/client-node": "^0.17.0"
+  },
   "devDependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
     "@vitejs/plugin-vue": "^4.0.0",
+    "ace-builds": "^1.15.3",
     "electron": "^23.1.1",
     "electron-builder": "^23.6.0",
+    "electron-devtools-installer": "^3.2.0",
+    "electron-store": "^8.1.0",
+    "element-plus": "^2.3.0",
+    "fast-glob": "^3.2.12",
+    "fast-text-encoding": "^1.0.6",
+    "qs": "^6.11.1",
     "typescript": "^4.9.5",
     "vite": "^4.1.4",
     "vite-plugin-electron": "^0.11.1",
     "vite-plugin-electron-renderer": "^0.12.1",
+    "vite-plugin-svg-icons": "^2.0.1",
     "vue": "^3.2.47",
+    "vue-router": "^4.1.6",
     "vue-tsc": "^1.1.7"
   }
 }

@@ -11,9 +11,15 @@
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
-    "noEmit": true
+    "noImplicitThis": false,
+    "noEmit": true,
+    "paths": {
+      "frontend/*":  ["./src/*"],
+      "shared/*":  ["./shared/*"],
+      "types/*": ["./types/*"]
+    }
   },
-  "include": ["src"],
+  "include": ["src/**/*","shared/**/*","types/**/*"],
   "references": [
     { "path": "./tsconfig.node.json" }
   ]
