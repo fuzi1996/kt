@@ -77,8 +77,9 @@ ipcMain.handle(WINDOW_EVENT.OPEN, (event,route) =>{
       const url = `${entryUrl}${appendPath}`
       child.loadURL(url)
     } else {
-      const url = `${entryHtml}${appendPath}`
-      child.loadFile(url)
+      child.loadFile(entryHtml,{
+        hash: appendPath
+      })
     }
     
 
