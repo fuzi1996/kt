@@ -3,13 +3,15 @@ import { EventBinder } from "types/EventBinder";
 import { Initializer } from "types/Initializer";
 
 export class AppInitialization implements Initializer,EventBinder{
-  private win: BrowserWindow | null = null
+  private win: BrowserWindow|null = null;
   private createWindow: () => BrowserWindow
-  private onAppReady: (afterCreateHook?: (win:BrowserWindow)=>void) => void | null = null
+  private onAppReady: ((afterCreateHook?: (win:BrowserWindow)=>void) => void)|null = null
 
-  constructor(createWindow: () => BrowserWindow,onAppReady: () => void | null = null){
+  constructor(createWindow: () => BrowserWindow,onAppReady?: () => void){
     this.createWindow = createWindow
-    this.onAppReady = onAppReady
+    if(onAppReady){
+      this.onAppReady = onAppReady
+    }
   }
 
   public init() {

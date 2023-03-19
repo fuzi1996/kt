@@ -22,9 +22,9 @@ export class PodListChannel implements IpcChannelInterface {
     const namespace = getNamespace()
 
     k8sApi.listNamespacedPod(namespace).then((res) => {
-      event.sender.send(request.responseChannel, res.body)
+      event.sender.send(request.responseChannel as string, res.body)
     }).catch(err => {
-      event.sender.send(request.responseErrorChannel, new Error(err.message))
+      event.sender.send(request.responseErrorChannel as string, new Error(err.message))
     })
   }
 }

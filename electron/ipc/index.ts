@@ -6,7 +6,7 @@ import { getWin,preload,url,indexHtml } from "backend/main"
 export class IPCInitialization implements Initializer{
 
   private ipcChannels: IpcChannelInterface[]
-  private win: BrowserWindow
+  private win: BrowserWindow|null
 
   constructor(ipcChannels: IpcChannelInterface[]){
     this.win = getWin()

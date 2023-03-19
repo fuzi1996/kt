@@ -29,19 +29,20 @@ ipcMain.on(K8S_EVENT.OPEN_FLOW_LOG, (_,param:LogParam)=>{
     timestamps: false
   }).catch(err => {
     console.log(err);
-  }).then((req:request.Request) => {
+  }).then((req) => {
+    const request = req as request.Request
     // disconnects after 5 seconds
     ipcMain.once(getCloseFlowLogEvent(param), () => {
-      if(req){
+      if(request){
         console.log(`${param.podName} 滚动日志已终止`)
-        req.abort();
+        request.abort();
       }
       
     })
 
-    if (req) {
+    if (request) {
       setTimeout(function(){
-        req.abort();
+        request.abort();
         console.log(`${param.podName} 滚动日志超时自动终止`)
       }, 50000);
     }

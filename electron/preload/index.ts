@@ -1,4 +1,4 @@
-function domReady(condition: DocumentReadyState[] = ['complete', 'interactive']) {
+const domReady = (condition: DocumentReadyState[] = ['complete', 'interactive']) => {
   return new Promise((resolve) => {
     if (condition.includes(document.readyState)) {
       resolve(true)
@@ -90,3 +90,5 @@ window.onmessage = (ev) => {
 }
 
 setTimeout(removeLoading, 4999)
+
+export {}

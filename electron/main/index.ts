@@ -14,7 +14,7 @@ process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
   ? join(process.env.DIST_ELECTRON, '../public')
   : process.env.DIST
 
-const WINDOW_CACHE = {}
+const WINDOW_CACHE:Record<string,number> = {}
 let win: BrowserWindow | null = null
 
 export const getWin = (): BrowserWindow | null => {
@@ -37,7 +37,7 @@ const stringifyInOrder = (param:any) => {
 }
 
 const getWindow = (id:number): BrowserWindow => {
-  return BrowserWindow.fromId(id)
+  return BrowserWindow.fromId(id) as BrowserWindow
 }
 
 export const getLogWindow = (param:LogParam): BrowserWindow | null => {
@@ -91,7 +91,7 @@ ipcMain.handle(WINDOW_EVENT.OPEN, (event,route) =>{
 
     child.on('closed', () => {
       delete WINDOW_CACHE[key]
-      getWin().show()
+      getWin()?.show()
     })
 
     if (process.env.VITE_DEV_SERVER_URL) {
@@ -158,7 +158,7 @@ class Main{
       try {
         await installExtension(VUEJS_DEVTOOLS)
       } catch (e) {
-        console.error('Vue Devtools failed to install:', e.toString())
+        console.error('Vue Devtools failed to install:', (e as Error).toString())
       }
     }
 

@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@types/qs": "^6.9.7",
+    "@types/request": "^2.48.8",
     "@vitejs/plugin-vue": "^4.0.0",
     "ace-builds": "^1.15.3",
     "electron": "^23.1.1",

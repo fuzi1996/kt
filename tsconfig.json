@@ -14,13 +14,18 @@
     "noImplicitThis": false,
     "noEmit": true,
     "paths": {
+      "backend/*":  ["./electron/*"],
       "frontend/*":  ["./src/*"],
       "shared/*":  ["./shared/*"],
       "types/*": ["./types/*"]
     }
   },
-  "include": ["src/**/*","shared/**/*","types/**/*"],
-  "references": [
-    { "path": "./tsconfig.node.json" }
+  "include": [
+    "vite.config.ts",
+    "package.json",
+    "electron/**/*",
+    "src/**/*",
+    "shared/**/*",
+    "types/**/*"
   ]
 }
