@@ -50,6 +50,14 @@
         <el-text class="label">总内存量:</el-text>
         <el-text class="value">{{systemInfo.totalmem}} </el-text>
       </el-row>
+      <el-row>
+        <el-text class="label">用户数据存储路径:</el-text>
+        <el-text class="value">{{systemInfo.userDataPath}} </el-text>
+      </el-row>
+      <el-row>
+        <el-text class="label">STORE文件存储路径:</el-text>
+        <el-text class="value">{{systemInfo.storePath}} </el-text>
+      </el-row>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="isDialogShow = false">关闭</el-button>
@@ -77,7 +85,9 @@ const systemInfo = ref<ISystemInfo>({
   arch: "",
   release: "",
   uptime: 0,
-  totalmem: 0
+  totalmem: 0,
+  userDataPath: '',
+  storePath: ''
 })
 const setting = ref<ISettings>({
   defaultNamespace: 'default'

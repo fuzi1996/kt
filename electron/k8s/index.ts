@@ -49,4 +49,11 @@ ipcMain.on(K8S_EVENT.OPEN_FLOW_LOG, (_,param:LogParam)=>{
   });
 })
 
-export const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
+let k8sApi:k8s.CoreV1Api|null = null
+
+export const getK8sApi = ():k8s.CoreV1Api =>{
+  if(!k8sApi){
+    k8sApi = kc.makeApiClient(k8s.CoreV1Api)
+  }
+  return k8sApi
+}
