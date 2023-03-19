@@ -69,7 +69,7 @@ import { ref,reactive, onMounted, toRaw } from 'vue'
 import { ElMessage } from 'element-plus'
 
 const isDialogShow = ref<boolean>(false)
-const systemInfo = reactive<ISystemInfo>({
+const systemInfo = ref<ISystemInfo>({
   hostname: "",
   tmpdir: "",
   type: "",
@@ -120,9 +120,7 @@ const handleSave = () => {
 const handleGetSystemInfo = async () => {
   const ipcService = new IpcService()
   ipcService.send<ISystemInfo>(SYSTEM_EVENT.SYSTEM_INFO).then(res => {
-    for(let key in res){
-      systemInfo[key] = res[key]
-    }
+    systemInfo.value = res
     isDialogShow.value = true
   })
 }
