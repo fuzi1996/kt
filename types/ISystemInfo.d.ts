@@ -15,4 +15,8 @@ export interface ISystemInfo {
   uptime: number;
   // 系统总内存量
   totalmem: number;
+  // 用户数据存储路径
+  userDataPath: string;
+  // elctron-store文件存储路径
+  storePath: string;
 }

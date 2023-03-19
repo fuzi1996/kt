@@ -18,6 +18,10 @@ const schema:Schema<Record<string, any>> = {
 
 const store = new ElectronStore({schema});
 
+export const getStorePath = ():string => {
+	return store.path
+}
+
 export const getNamespace = () => {
 	return store.get(STORE_KEY.SETTING_DEFAULT_NAMESPACE)
 }

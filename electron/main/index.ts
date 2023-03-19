@@ -77,6 +77,7 @@ ipcMain.handle(WINDOW_EVENT.OPEN, (event,route) =>{
       const url = `${entryUrl}${appendPath}`
       child.loadURL(url)
     } else {
+      // issues/2
       child.loadFile(entryHtml,{
         hash: appendPath
       })
@@ -152,7 +153,7 @@ class Main{
     if (isDevelopment && !process.env.IS_TEST) {
       // Install Vue Devtools
       // Devtools extensions are broken in Electron 6.0.0 and greater
-      // See https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/378 for more info
+      // See https://github.com/nklayman/vue-cli-plugin-electron-builder/issues/478 for more info
       // Electron will not launch with Devtools extensions installed on Windows 10 with dark mode
       // If you are not using Windows 10 dark mode, you may uncomment these lines
       // In addition, if the linked issue is closed, you can upgrade electron and uncomment these lines

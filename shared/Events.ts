@@ -30,3 +30,7 @@ export const CLIPBOARD_EVENT:Record<string,string> = {
 export const WINDOW_EVENT:Record<string,string> = {
   OPEN: 'open'
 }
+
+export const SETTING_EVENT:Record<string,string> = {
+  COLLECT_SETTING: 'collect_setting'
+}

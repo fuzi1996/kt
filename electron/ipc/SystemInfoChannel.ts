@@ -1,10 +1,11 @@
 import { IpcChannelInterface } from "types/IpcChannelInterface";
-import { IpcMainEvent } from 'electron';
+import { IpcMainEvent,app } from 'electron';
 import { IpcRequest } from "types/IpcRequest";
 import { getChannelResponse } from 'shared/Response'
 import os from 'os';
 import { ISystemInfo } from 'types/ISystemInfo'
 import { SYSTEM_EVENT } from 'shared/Events'
+import { getStorePath } from 'backend/store'
 
 export class SystemInfoChannel implements IpcChannelInterface {
   getName(): string {
@@ -39,8 +40,13 @@ export class SystemInfoChannel implements IpcChannelInterface {
       uptime: os.uptime(),
 
       // 系统总内存量
-      totalmem: os.totalmem()
+      totalmem: os.totalmem(),
 
+      // 用户数据存储路径
+      userDataPath: app.getPath('userData'),
+      
+      // elctron-store文件存储路径
+      storePath: getStorePath()
     }
     
     event.sender.send(request.responseChannel, systemInfo);
