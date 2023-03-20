@@ -92,9 +92,7 @@ const openPodLog = (row: Pod) => {
       namespace: row.namespace
     }
   }
-  ipcRenderer.invoke(WINDOW_EVENT.OPEN, route).then(()=>{
-    ElMessage.success('打开成功')
-  })
+  ipcRenderer.invoke(WINDOW_EVENT.OPEN, route)
 }
 
 const handleCopyIconClick = (row: Pod) => {

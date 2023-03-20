@@ -1,12 +1,11 @@
 <template>
   <el-container class="log-container">
-    <div ref="logWindowRef" class="log-window"></div>
-    <!-- <el-header>
-      <el-button @click="abortFlowLog">中止</el-button>
+    <el-header class="log-header">
+      <el-button @click="handleClearConsole">清屏</el-button>
     </el-header>
     <el-main>
-      
-    </el-main> -->
+      <div ref="logWindowRef" class="log-window"></div>
+    </el-main>
   </el-container>
 </template>
 <script setup lang="ts">
@@ -15,7 +14,7 @@ import { LogParam } from 'types/Log'
 import { K8S_EVENT, getFlowLogEvent, getCloseFlowLogEvent } from 'shared/Events'
 import { ipcRenderer } from 'electron'
 import * as ace from "ace-builds/src-noconflict/ace"
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, getCurrentInstance } from 'vue'
 import { Ace } from "ace-builds/ace"
 // import { debounce } from 'frontend/utils'
 import 'fast-text-encoding'
@@ -182,6 +181,13 @@ const addLog = (data: any) => {
     lines.value = sess.getLength()
   }
 }
+
+const handleClearConsole = () => {
+  if(editor){
+    editor.setValue('')
+    getCurrentInstance()?.proxy?.$forceUpdate()
+  }
+}
 </script>
 <style scoped>
 .log-container{
@@ -191,5 +197,10 @@ const addLog = (data: any) => {
 .log-window{
   width: 100%;
   height: 100%;
+}
+.log-header{
+  height: 15px;
+  margin-bottom: 3px;
+  margin-top: 3px;
 }
 </style>
