@@ -4,7 +4,6 @@
   </div>
 </template>
 <script setup lang="ts">
-console.log(document.location)
 </script>
 <style scoped>
 .container{

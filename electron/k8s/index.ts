@@ -37,15 +37,7 @@ ipcMain.on(K8S_EVENT.OPEN_FLOW_LOG, (_,param:LogParam)=>{
         console.log(`${param.podName} 滚动日志已终止`)
         request.abort();
       }
-      
     })
-
-    if (request) {
-      setTimeout(function(){
-        request.abort();
-        console.log(`${param.podName} 滚动日志超时自动终止`)
-      }, 50000);
-    }
   });
 })
 

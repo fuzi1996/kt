@@ -4,7 +4,7 @@
       <el-button @click="handleClearConsole">清屏</el-button>
     </el-header>
     <el-main>
-      <div ref="logWindowRef" class="log-window"></div>
+      <div id="temp" ref="logWindowRef" class="log-window" :style="{'font-size': fontSize+'px'}"></div>
     </el-main>
   </el-container>
 </template>
@@ -34,9 +34,9 @@ let editor: Ace.Editor|undefined = undefined
 const wrap = ref<boolean>(true)
 const darkTheme = ref<boolean>(false)
 const autoScroll = ref<boolean>(true)
-const logWindowRef = ref(null)
+const logWindowRef = ref<HTMLElement | null>(null)
 const lines = ref<number>(0)
-
+const fontSize = ref<number>(14)
 interface SystaxHighlighter {
   title: string,
   mode: string
@@ -53,7 +53,21 @@ const utf8decoder = new TextDecoder();
 
 onMounted(() => {
   initAceEditor()
+  initCtrlAndMousewheel()
 })
+
+const initCtrlAndMousewheel = () => {
+  logWindowRef.value?.addEventListener('wheel', (ev) => {
+  const wheelEvent = ev as WheelEvent
+  if (wheelEvent.ctrlKey) {
+    if(wheelEvent.deltaY < 0){
+      fontSize.value+=1
+    } else {
+      fontSize.value-=1
+    }
+  }
+});
+}
 
 ipcRenderer.send(K8S_EVENT.OPEN_FLOW_LOG, logparam)
 
