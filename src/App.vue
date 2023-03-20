@@ -1,7 +1,7 @@
 <template>
-  <el-container class="container" direction="vertical">
+  <el-container class="out-container">
     <!-- <el-header class="header">Header</el-header> -->
-    <el-container>
+    <el-container class="inner-container">
       <NavDrawer/>
       <el-main class="main">
         <router-view></router-view>
@@ -13,7 +13,14 @@
 import NavDrawer from 'frontend/components/main/NavDrawer.vue';
 </script>
 <style scoped>
-.container{
+.out-container{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.inner-container{
   position: absolute;
   top: 0;
   left: 0;

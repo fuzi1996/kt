@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pod-list-container">
     <el-row>
       <el-col :span="12">
         <el-input v-model="fileterValue"></el-input>
@@ -8,14 +8,11 @@
         <el-button @click="listPod" class="first-but">刷新</el-button>
       </el-col>
     </el-row>
-    <el-divider />
-    <el-table :data="podList" style="width: 100%" v-loading="loading">
+    <el-divider class="search-divider" />
+    <el-table id="pod-table" :data="podList" v-loading="loading" :height="height">
       <el-table-column label="Date" width="auto" min-width="25%">
         <template #default="scope">
-          <div style="display: flex; align-items: center">
-            <el-icon><timer /></el-icon>
-            <span style="margin-left: 10px">{{ scope.row.creationTimestamp }}</span>
-          </div>
+          <span>{{ scope.row.creationTimestamp }}</span>
         </template>
       </el-table-column>
       <el-table-column label="Name" width="auto" min-width="45%" show-overflow-tooltip>
@@ -45,7 +42,7 @@ import { K8S_EVENT,CLIPBOARD_EVENT,WINDOW_EVENT } from 'shared/Events'
 import { LOG_MENU_ROUTE } from 'shared/Menu'
 import { ElMessage } from 'element-plus'
 import { V1PodList,V1Pod } from "@kubernetes/client-node";
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 
 interface Pod {
   value: V1Pod
@@ -61,11 +58,18 @@ const fileterValue = ref<string>('')
 const allPods: Pod[] = []
 const podList = ref<Pod[]>([])
 const loading = ref<boolean>(false)
+const height = ref<number>(200)
+const tablePadding = 30
+
 onMounted(()=>{
+  getAutoHeight()
+  window.onresize = function() {
+    getAutoHeight()
+  }
   listPod()
 })
 
-function filtePod(){
+const filtePod = () => {
   if(fileterValue.value){
     podList.value = allPods.filter(pod => {
       if(pod.name){
@@ -79,7 +83,7 @@ function filtePod(){
   }
 }
 
-function openPodLog(row: Pod){
+const openPodLog = (row: Pod) => {
   const route = {
     route: LOG_MENU_ROUTE,
     param: {
@@ -93,7 +97,7 @@ function openPodLog(row: Pod){
   })
 }
 
-function handleCopyIconClick(row: Pod){
+const handleCopyIconClick = (row: Pod) => {
   row.copying = true
   ipcRenderer.invoke(CLIPBOARD_EVENT.COPY, row.name).then(()=>{
     ElMessage.success('复制成功')
@@ -102,7 +106,7 @@ function handleCopyIconClick(row: Pod){
   })
 }
 
-function formCreationTimestamp(date?: Date): string{
+const formCreationTimestamp = (date?: Date): string => {
   if(date){
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -115,6 +119,33 @@ function formCreationTimestamp(date?: Date): string{
     return ''
   }
 }
+
+const getAutoHeight = () => {
+  const el = document.getElementById("pod-table")
+  if(el){
+    const elParent = (el as HTMLElement).parentNode as HTMLElement
+    if(elParent){
+      nextTick(()=>{
+        height.value = elParent.clientHeight - tablePadding
+      })
+    }
+  }
+  
+  // pt = this.getStyle(elParent, "paddingTop"),
+  // pb = this.getStyle(elParent, "paddingBottom");
+  // this.$nextTick(() => {
+  //   this.height = elParent.clientHeight - (pt + pb) + "px";
+  // });
+}
+
+// const getStyle = (obj, attr) => {
+//       // 兼容IE浏览器
+//       let result = obj.currentStyle
+//         ? obj.currentStyle[attr].replace("px", "")
+//         : document.defaultView
+//             .getComputedStyle(obj, null)[attr].replace("px", "");
+//       return Number(result);
+//     }
 
 const listPod = () => {
   allPods.length = 0
@@ -147,5 +178,11 @@ const listPod = () => {
 <style scoped>
 .first-but{
   margin-left: 12px;
+}
+.search-divider{
+  margin: 5px 0;
+}
+.pod-list-container{
+  height: 100%;
 }
 </style>
