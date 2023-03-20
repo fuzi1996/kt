@@ -18,9 +18,9 @@ import { onMounted, ref, getCurrentInstance } from 'vue'
 import { Ace } from "ace-builds/ace"
 // import { debounce } from 'frontend/utils'
 import 'fast-text-encoding'
-import 'ace-builds/webpack-resolver'
+import 'ace-builds/esm-resolver'
 
-ace.config.set('basePath', 'ace-builds/src-noconflict/ace')
+ace.config.set('basePath', 'ace-builds/src/ace')
 
 const route = useRoute()
 
