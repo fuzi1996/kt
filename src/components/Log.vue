@@ -1,12 +1,11 @@
 <template>
   <el-container class="log-container">
-    <div ref="logWindowRef" class="log-window"></div>
-    <!-- <el-header>
-      <el-button @click="abortFlowLog">中止</el-button>
+    <el-header class="log-header">
+      <el-button @click="handleClearConsole">清屏</el-button>
     </el-header>
     <el-main>
-      
-    </el-main> -->
+      <div id="temp" ref="logWindowRef" class="log-window" :style="{'font-size': fontSize+'px'}"></div>
+    </el-main>
   </el-container>
 </template>
 <script setup lang="ts">
@@ -15,13 +14,13 @@ import { LogParam } from 'types/Log'
 import { K8S_EVENT, getFlowLogEvent, getCloseFlowLogEvent } from 'shared/Events'
 import { ipcRenderer } from 'electron'
 import * as ace from "ace-builds/src-noconflict/ace"
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, getCurrentInstance } from 'vue'
 import { Ace } from "ace-builds/ace"
 // import { debounce } from 'frontend/utils'
 import 'fast-text-encoding'
-import 'ace-builds/webpack-resolver'
+import 'ace-builds/esm-resolver'
 
-ace.config.set('basePath', 'ace-builds/src-noconflict/ace')
+ace.config.set('basePath', 'ace-builds/src/ace')
 
 const route = useRoute()
 
@@ -35,9 +34,9 @@ let editor: Ace.Editor|undefined = undefined
 const wrap = ref<boolean>(true)
 const darkTheme = ref<boolean>(false)
 const autoScroll = ref<boolean>(true)
-const logWindowRef = ref(null)
+const logWindowRef = ref<HTMLElement | null>(null)
 const lines = ref<number>(0)
-
+const fontSize = ref<number>(14)
 interface SystaxHighlighter {
   title: string,
   mode: string
@@ -54,7 +53,21 @@ const utf8decoder = new TextDecoder();
 
 onMounted(() => {
   initAceEditor()
+  initCtrlAndMousewheel()
 })
+
+const initCtrlAndMousewheel = () => {
+  logWindowRef.value?.addEventListener('wheel', (ev) => {
+  const wheelEvent = ev as WheelEvent
+  if (wheelEvent.ctrlKey) {
+    if(wheelEvent.deltaY < 0){
+      fontSize.value+=1
+    } else {
+      fontSize.value-=1
+    }
+  }
+});
+}
 
 ipcRenderer.send(K8S_EVENT.OPEN_FLOW_LOG, logparam)
 
@@ -182,6 +195,13 @@ const addLog = (data: any) => {
     lines.value = sess.getLength()
   }
 }
+
+const handleClearConsole = () => {
+  if(editor){
+    editor.setValue('')
+    getCurrentInstance()?.proxy?.$forceUpdate()
+  }
+}
 </script>
 <style scoped>
 .log-container{
@@ -191,5 +211,10 @@ const addLog = (data: any) => {
 .log-window{
   width: 100%;
   height: 100%;
+}
+.log-header{
+  height: 15px;
+  margin-bottom: 3px;
+  margin-top: 3px;
 }
 </style>
