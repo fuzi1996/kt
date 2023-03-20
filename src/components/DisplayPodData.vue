@@ -1,9 +1,15 @@
 <template>
   <div>
-    <el-input v-model="fileterValue"></el-input>
-    <el-button @click="listPod">刷新</el-button>
-    <el-button @click="filtePod">过滤</el-button>
-    <el-table :data="podList" style="width: 100%">
+    <el-row>
+      <el-col :span="12">
+        <el-input v-model="fileterValue"></el-input>
+      </el-col>
+      <el-col :span="12">
+        <el-button @click="listPod" class="first-but">刷新</el-button>
+      </el-col>
+    </el-row>
+    <el-divider />
+    <el-table :data="podList" style="width: 100%" v-loading="loading">
       <el-table-column label="Date" width="auto" min-width="25%">
         <template #default="scope">
           <div style="display: flex; align-items: center">
@@ -54,17 +60,16 @@ const ipcService = new IpcService()
 const fileterValue = ref<string>('')
 const allPods: Pod[] = []
 const podList = ref<Pod[]>([])
-
+const loading = ref<boolean>(false)
 onMounted(()=>{
   listPod()
 })
 
 function filtePod(){
   if(fileterValue.value){
-    const filtePattern = new RegExp(fileterValue.value,'g')
     podList.value = allPods.filter(pod => {
       if(pod.name){
-        return filtePattern.test(pod.name)
+        return pod.name.indexOf(fileterValue.value) > -1;
       }else{
         return false
       }
@@ -113,28 +118,34 @@ function formCreationTimestamp(date?: Date): string{
 
 const listPod = () => {
   allPods.length = 0
+  podList.value.length = 0
+  loading.value = true
   ipcService.send<any>(K8S_EVENT.LIST_POD).then(res => {
     const response:V1PodList = res as V1PodList
-    console.log('listPod',response)
     response.items.forEach(item => {
       if(item.metadata && item.spec){
         const pod: Pod = {
-        value: item,
-        name: item.metadata.name,
-        containerName: item.spec.containers[0].name,
-        creationTimestamp: formCreationTimestamp(item.metadata?.creationTimestamp),
-        copying: false,
-        namespace: item.metadata.namespace || ''
-      }
-      allPods.push(pod)
+          value: item,
+          name: item.metadata.name,
+          containerName: item.spec.containers[0].name,
+          creationTimestamp: formCreationTimestamp(item.metadata?.creationTimestamp),
+          copying: false,
+          namespace: item.metadata.namespace || ''
+        }
+        allPods.push(pod)
       }
     })
     filtePod()
   }).catch(err => {
     ElMessage.error(`获取Pod列表失败,${err.message}`)
+  }).finally(() =>{
+    loading.value = false
   })
 }
 
 </script>
 <style scoped>
+.first-but{
+  margin-left: 12px;
+}
 </style>
