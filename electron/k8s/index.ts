@@ -5,13 +5,17 @@ import { LogParam } from 'types/Log'
 import stream from 'stream'
 import request from 'request'
 import { getLogWindow } from 'backend/main'
-
+import log from 'electron-log'
 
 let kc:KubeConfig|null = null
 
 const initKubeConfig = () => {
-  kc = new k8s.KubeConfig();
-  kc.loadFromDefault();
+  try {
+    kc = new k8s.KubeConfig();
+    kc.loadFromDefault();
+  }catch(err) {
+    log.error('kubeconfig load from default error:',err)
+  }
 }
 
 const getKubeConfig = ():KubeConfig => {
@@ -21,17 +25,17 @@ const getKubeConfig = ():KubeConfig => {
   return kc as KubeConfig
 }
 
-let log: Log|null = null
+let k8sLog: Log|null = null
 
 const initLog = ():void => {
-  log = new k8s.Log(getKubeConfig());
+  k8sLog = new k8s.Log(getKubeConfig());
 }
 
 const getLog = ():Log => {
-  if(log === null){
+  if(k8sLog === null){
     initLog()
   }
-  return log as Log
+  return k8sLog as Log
 }
 
 ipcMain.on(K8S_EVENT.OPEN_FLOW_LOG, (_,param:LogParam)=>{

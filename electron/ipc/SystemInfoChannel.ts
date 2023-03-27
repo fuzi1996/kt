@@ -1,11 +1,13 @@
-import { IpcChannelInterface } from "types/IpcChannelInterface";
-import { IpcMainEvent,app } from 'electron';
-import { IpcRequest } from "types/IpcRequest";
+import { IpcChannelInterface } from "types/IpcChannelInterface"
+import { IpcMainEvent,app } from 'electron'
+import { IpcRequest } from "types/IpcRequest"
 import { getChannelResponse } from 'shared/Response'
-import os from 'os';
+import os from 'os'
+import path from 'path'
 import { ISystemInfo } from 'types/ISystemInfo'
 import { SYSTEM_EVENT } from 'shared/Events'
 import { getStorePath } from 'backend/store'
+import log from 'electron-log'
 
 export class SystemInfoChannel implements IpcChannelInterface {
   getName(): string {
@@ -16,6 +18,8 @@ export class SystemInfoChannel implements IpcChannelInterface {
     if (!request.responseChannel) {
       request.responseChannel = getChannelResponse(this.getName());
     }
+
+    const userDataPath = app.getPath('userData')
 
     const systemInfo: ISystemInfo = {
       // 系统中的默认存放临时文件的目录
@@ -43,10 +47,13 @@ export class SystemInfoChannel implements IpcChannelInterface {
       totalmem: os.totalmem(),
 
       // 用户数据存储路径
-      userDataPath: app.getPath('userData'),
+      userDataPath,
       
       // elctron-store文件存储路径
-      storePath: getStorePath()
+      storePath: getStorePath(),
+
+      // 日志路径
+      logPath: log.transports.file.getFile().path
     }
     
     event.sender.send(request.responseChannel, systemInfo);

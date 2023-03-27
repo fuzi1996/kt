@@ -7,6 +7,8 @@ import { WINDOW_EVENT } from 'shared/Events'
 import qs from 'qs'
 import { LogParam } from 'types/Log'
 import { LOG_MENU_ROUTE } from 'shared/Menu'
+import log from 'electron-log'
+log.transports.file.fileName = 'kt.log'
 
 process.env.DIST_ELECTRON = join(__dirname, '..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
