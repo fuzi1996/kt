@@ -5,6 +5,7 @@ import { getChannelResponse,getErrorChannelResponse } from 'shared/Response'
 import { K8S_EVENT } from 'shared/Events'
 import { getK8sApi } from 'backend/k8s'
 import { getNamespace } from 'backend/store'
+import log from 'electron-log'
 
 export class PodListChannel implements IpcChannelInterface {
   getName(): string {
@@ -22,14 +23,11 @@ export class PodListChannel implements IpcChannelInterface {
     const namespace = getNamespace()
 
     // issues/4
-    try {
-      getK8sApi().listNamespacedPod(namespace).then((res) => {
-        event.sender.send(request.responseChannel as string, res.body)
-      }).catch(err => {
-        event.sender.send(request.responseErrorChannel as string, new Error(err.message))
-      })
-    } catch (error) {
-      event.sender.send(request.responseErrorChannel as string, new Error((error as Error).message))
-    }
+    getK8sApi().listNamespacedPod(namespace).then((res) => {
+      event.sender.send(request.responseChannel as string, res.body)
+    }).catch(err => {
+      log.error(`list namespace [${namespace}] pod errr:`,err)
+      event.sender.send(request.responseErrorChannel as string, new Error(err.message))
+    })
   }
 }

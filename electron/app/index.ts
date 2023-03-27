@@ -1,6 +1,7 @@
 import { BrowserWindow, app } from "electron";
 import { EventBinder } from "types/EventBinder";
 import { Initializer } from "types/Initializer";
+import log from 'electron-log'
 
 export class AppInitialization implements Initializer,EventBinder{
   private win: BrowserWindow|null = null;
@@ -15,6 +16,7 @@ export class AppInitialization implements Initializer,EventBinder{
   }
 
   public init() {
+    log.info("app init")
   }
 
   public bindEvents(){

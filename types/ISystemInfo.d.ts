@@ -19,4 +19,6 @@ export interface ISystemInfo {
   userDataPath: string;
   // elctron-store文件存储路径
   storePath: string;
+  // 日志文件路径
+  logPath: string;
 }

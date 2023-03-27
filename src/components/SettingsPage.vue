@@ -58,6 +58,10 @@
         <el-text class="label">STORE文件存储路径:</el-text>
         <el-text class="value">{{systemInfo.storePath}} </el-text>
       </el-row>
+      <el-row>
+        <el-text class="label">日志文件存储路径:</el-text>
+        <el-text class="value">{{systemInfo.logPath}} </el-text>
+      </el-row>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="isDialogShow = false">关闭</el-button>
@@ -87,7 +91,8 @@ const systemInfo = ref<ISystemInfo>({
   uptime: 0,
   totalmem: 0,
   userDataPath: '',
-  storePath: ''
+  storePath: '',
+  logPath: ''
 })
 const setting = ref<ISettings>({
   defaultNamespace: 'default'
