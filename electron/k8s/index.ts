@@ -1,4 +1,4 @@
-import k8s from '@kubernetes/client-node'
+import k8s, { KubeConfig, Log } from '@kubernetes/client-node'
 import { ipcMain } from 'electron'
 import { K8S_EVENT, getCloseFlowLogEvent, getFlowLogEvent } from 'shared/Events'
 import { LogParam } from 'types/Log'
@@ -6,10 +6,33 @@ import stream from 'stream'
 import request from 'request'
 import { getLogWindow } from 'backend/main'
 
-const kc = new k8s.KubeConfig();
-kc.loadFromDefault();
 
-const log = new k8s.Log(kc);
+let kc:KubeConfig|null = null
+
+const initKubeConfig = () => {
+  kc = new k8s.KubeConfig();
+  kc.loadFromDefault();
+}
+
+const getKubeConfig = ():KubeConfig => {
+  if(kc === null){
+    initKubeConfig()
+  }
+  return kc as KubeConfig
+}
+
+let log: Log|null = null
+
+const initLog = ():void => {
+  log = new k8s.Log(getKubeConfig());
+}
+
+const getLog = ():Log => {
+  if(log === null){
+    initLog()
+  }
+  return log as Log
+}
 
 ipcMain.on(K8S_EVENT.OPEN_FLOW_LOG, (_,param:LogParam)=>{
   const logStream = new stream.PassThrough();
@@ -22,7 +45,7 @@ ipcMain.on(K8S_EVENT.OPEN_FLOW_LOG, (_,param:LogParam)=>{
     }
   });
 
-  log.log(param.namespace, param.podName, param.containerName, logStream, {
+  getLog().log(param.namespace, param.podName, param.containerName, logStream, {
     follow: true, 
     tailLines: 50, 
     pretty: false, 
@@ -44,8 +67,8 @@ ipcMain.on(K8S_EVENT.OPEN_FLOW_LOG, (_,param:LogParam)=>{
 let k8sApi:k8s.CoreV1Api|null = null
 
 export const getK8sApi = ():k8s.CoreV1Api =>{
-  if(!k8sApi){
-    k8sApi = kc.makeApiClient(k8s.CoreV1Api)
+  if(k8sApi === null){
+    k8sApi = getKubeConfig().makeApiClient(k8s.CoreV1Api)
   }
   return k8sApi
 }
